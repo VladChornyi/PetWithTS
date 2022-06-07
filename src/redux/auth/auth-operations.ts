@@ -1,3 +1,4 @@
+import { IUser, IRefreshToken, IAuthInitialState } from './../types/typesStore';
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { resetErrorAction } from "../error/error-action";
@@ -7,7 +8,7 @@ import { projectLogOut } from "../projects/projects-slice";
 axios.defaults.baseURL = "https://sbc-backend.goit.global";
 
 export const token = {
-  set(token) {
+  set(token:string | null) {
     axios.defaults.headers.common.Authorization = `Bearer ${token}`;
   },
   unset() {
@@ -32,11 +33,9 @@ const logIn = createAsyncThunk(
 
 const register = createAsyncThunk(
   "auth/register",
-  async (credentials, { dispatch, rejectWithValue }) => {
+  async (credentials:IUser, { dispatch, rejectWithValue }) => {
     try {
       const { data } = await axios.post("/auth/register", credentials);
-      await dispatch(logIn(credentials));
-
       return data;
     } catch (error) {
       return rejectWithValue(setErrorStatus(error));
@@ -49,7 +48,7 @@ const register = createAsyncThunk(
 
 const logOut = createAsyncThunk(
   "auth/logout",
-  async (_, { rejectWithValue, dispatch, getState }) => {
+  async (_, { rejectWithValue, dispatch}) => {
     try {
       await axios.post("/auth/logout");
 
@@ -62,17 +61,17 @@ const logOut = createAsyncThunk(
   }
 );
 
-const refreshToken = createAsyncThunk(
+const refreshToken = createAsyncThunk<IRefreshToken, ()=> any, {state:{auth:IAuthInitialState}}>(
   "auth/refreshToken",
-  async (cb, { getState, rejectWithValue, dispatch }) => {
-    const state = getState();
+  async (cb, { getState, dispatch }) => {
+    const state= getState();
     const persistedRefreshToken = state.auth.refreshToken;
     const sid = state.auth.sid;
 
     if (persistedRefreshToken === null) {
       token.unset();
 
-      return rejectWithValue();
+      return dispatch(logOut);
     }
     token.set(persistedRefreshToken);
     try {
@@ -87,6 +86,7 @@ const refreshToken = createAsyncThunk(
     }
   }
 );
+
 
 export const operations = {
   register,

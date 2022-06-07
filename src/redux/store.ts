@@ -1,3 +1,4 @@
+import { IAuthInitialState } from './types/typesStore';
 import { configureStore } from "@reduxjs/toolkit";
 import {
   persistStore,
@@ -13,7 +14,7 @@ import thunk from "redux-thunk";
 import storage from "redux-persist/lib/storage";
 import authReducer from "./auth/auth-slice";
 import { error } from "./error/error-reducer";
-import projects from "../redux/projects/projects-slice";
+import projects from "./projects/projects-slice";
 import sprints from "./sprints/sprints-slice";
 import tasks from "./task/task-slice";
 
@@ -25,7 +26,7 @@ const authPersistConfig = {
 
 export const store = configureStore({
   reducer: {
-    auth: persistReducer(authPersistConfig, authReducer),
+    auth: persistReducer<IAuthInitialState>(authPersistConfig, authReducer),
     error,
     projects,
     sprints,
@@ -41,3 +42,7 @@ export const store = configureStore({
 });
 
 export const persistor = persistStore(store);
+
+export type RootState = ReturnType<typeof store.getState>
+
+export type AppDispatch = typeof store.dispatch
