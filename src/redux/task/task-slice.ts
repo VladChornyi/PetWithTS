@@ -6,7 +6,27 @@ import {
   patchTaskHours,
 } from "./task-operations";
 
-const initialState = {
+interface IHoursWastedPerDay {
+  currentDay: string;
+  singleHoursWasted: number;
+}
+
+interface IItem {
+  title: string;
+  id?: string;
+  _id?: string;
+  hoursPlanned: number;
+  hoursWasted: number;
+  hoursWastedPerDay: IHoursWastedPerDay[];
+}
+
+interface IInitialState {
+  items: IItem[];
+  error: null | string | unknown;
+  loading: boolean;
+}
+
+const initialState:IInitialState = {
   items: [],
   error: null,
   loading: false,
@@ -15,32 +35,36 @@ const initialState = {
 const tasksSlice = createSlice({
   name: "tasks",
   initialState,
-  extraReducers: {
-    [addTask.fulfilled](state, { payload }) {
+  reducers:{},
+  extraReducers: (builder)=>{
+    builder.addCase(addTask.fulfilled, (state, { payload })=>{
       state.error = null;
       state.items.push(payload);
       state.loading = false;
-    },
-    [addTask.rejected](state, { payload }) {
+    });
+    builder.addCase(addTask.rejected, (state, { payload }) => {
       state.error = payload;
       state.loading = false;
-    },
-    [getSprintsTasks.fulfilled](state, { payload }) {
-      if (payload.message === "No tasks found") return initialState;
-      if (payload.length === 0) {
-        return false;
+    });
+    builder.addCase(getSprintsTasks.fulfilled, (state, { payload }) => {
+      if (payload.message === "No tasks found") {
+        return initialState
       }
-      state.items = [...payload];
-    },
-    [deleteSprintsTask.fulfilled](state, { payload }) {
+      else if (payload.length === 0) {
+        return initialState;
+      } else {
+        state.items = [...payload]
+      }
+    });
+    builder.addCase(deleteSprintsTask.fulfilled, (state, { payload }) => {
       state.items = [
         ...state.items.filter((task) => {
           const taskId = task._id ?? task.id;
           return taskId !== payload;
         }),
       ];
-    },
-    [patchTaskHours.fulfilled](state, { payload }) {
+    });
+    builder.addCase(patchTaskHours.fulfilled, (state, { payload }) => {
       state.items = state.items.map((task) => {
         const taskId = task._id ?? task.id;
         if (taskId !== payload.id) {
@@ -61,7 +85,7 @@ const tasksSlice = createSlice({
 
         return task;
       });
-    },
+    });
   },
 });
 

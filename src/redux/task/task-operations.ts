@@ -2,20 +2,43 @@ import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getError } from "../error/error-handler";
 
+
+interface IAddTaskProps {
+  sprintId: string;
+  task: object;
+}
+
+interface IHoursWastedPerDay {
+  currentDay: string;
+  singleHoursWasted: number;
+}
+
+interface IItem {
+  title: string;
+  id?: string;
+  _id?: string;
+  hoursPlanned: number;
+  hoursWasted: number;
+  hoursWastedPerDay: IHoursWastedPerDay[];
+}
+
+interface IPatchTaskHours {
+  sprintId: string;
+  taskObj: object;
+}
+
 export const addTask = createAsyncThunk(
   "task/addTask",
-  async ({ sprintId, task }, { dispatch, rejectWithValue }) => {
+  async ({ sprintId, task }:IAddTaskProps, { rejectWithValue }) => {
     try {
       const { data } = await axios.post(`/task/${sprintId}`, task);
       return data;
-    } catch (error) {
-      dispatch(
+    } catch (error:any) {
         getError({
           error,
-          cb: () => addTask(),
+          cb: () => addTask({ sprintId, task }),
           operationType: "sprint/addSprint",
         })
-      );
       return rejectWithValue(error.message);
     }
   }
@@ -24,18 +47,16 @@ export const addTask = createAsyncThunk(
 export const getSprintsTasks = createAsyncThunk(
   "task/getTAsks",
 
-  async (sprintId, { dispatch, rejectWithValue }) => {
+  async (sprintId, { rejectWithValue }) => {
     try {
       const { data } = await axios.get(`/task/${sprintId}`);
       return data;
-    } catch (error) {
-      dispatch(
+    } catch (error:any) {
         getError({
           error,
           cb: () => getSprintsTasks(),
           operationType: "task/getTAsks",
         })
-      );
       return rejectWithValue(error.message);
     }
   }
@@ -47,7 +68,7 @@ export const deleteSprintsTask = createAsyncThunk(
     try {
       await axios.delete(`/task/${taskId}`);
       return taskId;
-    } catch (error) {
+    } catch (error:any) {
       return rejectWithValue(error.message);
     }
   }
@@ -55,8 +76,7 @@ export const deleteSprintsTask = createAsyncThunk(
 
 export const patchTaskHours = createAsyncThunk(
   "task/patchTaskHours",
-  async (data, { getState, rejectWithValue }) => {
-    const state = getState();
+  async (data:IPatchTaskHours, {rejectWithValue }) => {
     try {
       const response = await axios.patch(
         `/task/${data.sprintId}`,
@@ -72,7 +92,7 @@ export const patchTaskHours = createAsyncThunk(
       };
 
       return responseObj;
-    } catch (error) {
+    } catch (error:any) {
       return rejectWithValue(error.message);
     }
   }
@@ -80,7 +100,7 @@ export const patchTaskHours = createAsyncThunk(
 
 export const patchTitleSprint = createAsyncThunk(
   "task/patchTitleSprint",
-  async (Data, { rejectWithValue }) => {
+  async (Data:IItem, { rejectWithValue }) => {
     try {
       const { data } = await axios.patch(
         `/sprint/title/${Data.id}`,
@@ -93,7 +113,7 @@ export const patchTitleSprint = createAsyncThunk(
       };
 
       return response;
-    } catch (error) {
+    } catch (error:any) {
       return rejectWithValue(error.message);
     }
   }
