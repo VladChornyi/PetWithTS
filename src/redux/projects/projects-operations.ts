@@ -1,3 +1,4 @@
+import { IUpdateProjectTitleData, IUser } from './../types/typesStore';
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getError } from "../error/error-handler";
@@ -8,14 +9,12 @@ const postProject = createAsyncThunk(
     try {
       const { data } = await axios.post("/project", credentials);
       return data;
-    } catch (error) {
-      dispatch(
+    } catch (error:any) {
         getError({
           error,
           cb: () => postProject(),
           operationType: "postProject/project",
         })
-      );
       return rejectWithValue(error.message);
     }
   }
@@ -23,18 +22,16 @@ const postProject = createAsyncThunk(
 
 const deleteProject = createAsyncThunk(
   "deleteProject/project",
-  async (id, { dispatch, rejectWithValue }) => {
+  async (id:string, { dispatch, rejectWithValue }) => {
     try {
       await axios.delete(`/project/${id}`);
       return id;
-    } catch (error) {
-      dispatch(
+    } catch (error:any) {
         getError({
           error,
-          cb: () => deleteProject(),
+          cb: () => deleteProject(id),
           operationType: "deleteProject/project",
         })
-      );
       return rejectWithValue(error.message);
     }
   }
@@ -42,18 +39,16 @@ const deleteProject = createAsyncThunk(
 
 const addMember = createAsyncThunk(
   "member/addMember",
-  async ({ id, email }, { rejectWithValue, dispatch }) => {
+  async ({ id, email }:IUser, { rejectWithValue, dispatch }) => {
     try {
       const { data } = await axios.patch(`/project/contributor/${id}`, email);
       return { data, id };
-    } catch (error) {
-      dispatch(
+    } catch (error:any) {
         getError({
           error,
-          cb: () => addMember(),
+          cb: () => addMember({ id, email }),
           operationType: "member/addMember",
         })
-      );
       return rejectWithValue(error.message);
     }
   }
@@ -65,14 +60,12 @@ const getProjects = createAsyncThunk(
     try {
       const { data } = await axios.get("/project");
       return data;
-    } catch (error) {
-      dispatch(
+    } catch (error:any) {
         getError({
           error,
           cb: () => getProjects(),
           operationType: "getProject/project",
         })
-      );
       return rejectWithValue(error.message);
     }
   }
@@ -80,7 +73,7 @@ const getProjects = createAsyncThunk(
 
 export const updateProjectTitle = createAsyncThunk(
   "updateProjectTitle/projectId",
-  async (Data, { rejectWithValue }) => {
+  async (Data:IUpdateProjectTitleData ,{ rejectWithValue }) => {
     try {
       const { data } = await axios.patch(
         `/project/title/${Data.id}`,
@@ -91,7 +84,7 @@ export const updateProjectTitle = createAsyncThunk(
         title: data,
       };
       return response;
-    } catch (error) {
+    } catch (error: any) {
       return rejectWithValue(error.message);
     }
   }
