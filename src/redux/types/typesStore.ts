@@ -12,6 +12,13 @@ export interface IUser {
     email: null|string
 }
 
+export interface ICredentials{
+    email: null | string,
+    password: null | string
+}
+
+
+
 export interface IAuthInitialState{
     user: IUser,
     token: TToken,

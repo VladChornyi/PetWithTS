@@ -1,4 +1,4 @@
-import { IUser, IRefreshToken, IAuthInitialState } from './../types/typesStore';
+import {IRefreshToken, IAuthInitialState, ICredentials } from './../types/typesStore';
 import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { resetErrorAction } from "../error/error-action";
@@ -18,7 +18,7 @@ export const token = {
 
 const logIn = createAsyncThunk(
   "auth/login",
-  async (credentials, { rejectWithValue, dispatch }) => {
+  async (credentials: ICredentials, { rejectWithValue, dispatch }) => {
     try {
       const { data } = await axios.post("/auth/login", credentials);
       token.set(data.accessToken);
@@ -33,13 +33,12 @@ const logIn = createAsyncThunk(
 
 const register = createAsyncThunk(
   "auth/register",
-  async (credentials:IUser, { dispatch, rejectWithValue }) => {
+  async (credentials: ICredentials, { dispatch, rejectWithValue }) => {
     try {
       const { data } = await axios.post("/auth/register", credentials);
       return data;
     } catch (error) {
       return rejectWithValue(setErrorStatus(error));
-      //
     } finally {
       dispatch(resetErrorAction());
     }
@@ -61,7 +60,7 @@ const logOut = createAsyncThunk(
   }
 );
 
-const refreshToken = createAsyncThunk<IRefreshToken, ()=> any, {state:{auth:IAuthInitialState}}>(
+const refreshToken = createAsyncThunk <IRefreshToken, ()=> any, {state: {auth: IAuthInitialState}}>(
   "auth/refreshToken",
   async (cb, { getState, dispatch }) => {
     const state= getState();

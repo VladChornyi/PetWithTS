@@ -1,20 +1,34 @@
-import { AuthFormStyled } from "./AuthFormStyled";
-import { authOperations } from "../../../redux/auth";
-import { useDispatch } from "react-redux";
-import SubmitButton from "../../common/submitButton/SubmitButton";
-import { Formik, Form, Field } from "formik";
-import { validationSchema } from "./validationSchema";
-import { toast } from "react-toastify";
-const initialState = {
-  email: "",
-  password: "",
-  repeatPassword: "",
+import { AuthFormStyled } from './AuthFormStyled';
+import { authOperations } from '../../../redux/auth';
+import { useDispatch } from 'react-redux';
+import SubmitButton from '../../common/submitButton/SubmitButton';
+import { Formik, Form, Field } from 'formik';
+import { validationSchema } from './validationSchema';
+import { toast } from 'react-toastify';
+import { AppDispatch } from '../../../redux/store';
+
+interface IInitialState {
+  email: string;
+  password: string;
+  repeatPassword: string;
+}
+
+type TOnHandleSubmit = (cred: IInitialState) => void;
+
+interface IProps {
+  repeatPassword?: boolean;
+}
+
+const initialState: IInitialState = {
+  email: '',
+  password: '',
+  repeatPassword: '',
 };
 
-const AuthForm = ({ repeatPassword = true }) => {
-  const dispatch = useDispatch();
+const AuthForm = ({ repeatPassword = true }: IProps) => {
+  const dispatch: AppDispatch = useDispatch();
 
-  const onHandleSubmit = ({ email, password, repeatPassword }) => {
+  const onHandleSubmit: TOnHandleSubmit = ({ email, password, repeatPassword }) => {
     if (repeatPassword) {
       if (repeatPassword === password) {
         dispatch(authOperations.register({ email, password }));
@@ -23,7 +37,6 @@ const AuthForm = ({ repeatPassword = true }) => {
       }
     } else {
       dispatch(authOperations.logIn({ email, password }));
-
       toast.success(`Вітаємо!`);
     }
   };
@@ -38,21 +51,17 @@ const AuthForm = ({ repeatPassword = true }) => {
         {({ values, errors, touched, handleSubmit, handleChange }) => (
           <Form onSubmit={handleSubmit} className="inputWrapper">
             <Field
-              className={`inputForm  ${errors.email ? "errorPassword" : null} `}
+              className={`inputForm  ${errors.email ? 'errorPassword' : null} `}
               type="text"
               placeholder="E-mail"
               name="email"
               onChange={handleChange}
               value={values.email}
             />
-            {errors.email && touched.email ? (
-              <div className="errors">{errors.email}</div>
-            ) : null}
+            {errors.email && touched.email ? <div className="errors">{errors.email}</div> : null}
 
             <Field
-              className={`inputForm  ${
-                errors.password ? "errorPassword" : null
-              } `}
+              className={`inputForm  ${errors.password ? 'errorPassword' : null} `}
               type="text"
               placeholder="Пароль"
               name="password"
@@ -64,9 +73,7 @@ const AuthForm = ({ repeatPassword = true }) => {
             ) : null}
             {repeatPassword && (
               <Field
-                className={`inputForm  ${
-                  errors.password ? "errorPassword" : null
-                } `}
+                className={`inputForm  ${errors.password ? 'errorPassword' : null} `}
                 type="text"
                 placeholder="Повторіть пароль"
                 name="repeatPassword"
@@ -75,9 +82,7 @@ const AuthForm = ({ repeatPassword = true }) => {
               />
             )}
 
-            <SubmitButton
-              nameBtn={`${!repeatPassword ? "Увійти" : "Зареєструватись"}`}
-            />
+            <SubmitButton nameBtn={`${!repeatPassword ? 'Увійти' : 'Зареєструватись'}`} />
           </Form>
         )}
       </Formik>

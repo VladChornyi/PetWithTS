@@ -25,25 +25,25 @@ const authSlice = createSlice({
       state.sid = action.payload.sid;
       state.refreshToken = action.payload.refreshToken;
       state.isLoggedIn = true;
-    });
+    })
   
-    builder.addCase(authOperations.logOut.fulfilled,(state, action) => {
+    .addCase(authOperations.logOut.fulfilled,(state, action) => {
       state.user = { id: null, email: null };
       state.token = null;
       state.refreshToken = null;
       state.isLoggedIn = false;
       state.sid = null;
-    });
+    })
 
-    builder.addCase(authOperations.refreshToken.pending, (state, action) => {
+    .addCase(authOperations.refreshToken.pending, (state, action) => {
       state.isFetchingCurrentUser = true;
-    });
+    })
     
-    builder.addCase(authOperations.refreshToken.rejected, (state, action) => {
+    .addCase(authOperations.refreshToken.rejected, (state, action) => {
       state.isFetchingCurrentUser = false;
-    });
+    })
    
-    builder.addCase(authOperations.refreshToken.fulfilled, (state, action) => {
+    .addCase(authOperations.refreshToken.fulfilled, (state, action) => {
       state.token = action.payload.newAccessToken;
       state.refreshToken = action.payload.newRefreshToken;
       state.sid = action.payload.newSid;
