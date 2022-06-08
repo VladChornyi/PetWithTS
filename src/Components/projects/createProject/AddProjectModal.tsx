@@ -1,29 +1,33 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
-import SubmitButton from "../../common/submitButton/SubmitButton";
-import { WrapperForm } from "./AddProjectModalStyled";
-import projectsOperations from "../../../redux/projects/projects-operations";
+import SubmitButton from '../../common/submitButton/SubmitButton';
+import { WrapperForm } from './AddProjectModalStyled';
+import projectsOperations from '../../../redux/projects/projects-operations';
 
-const AddProjectModal = ({ setCloseModal }) => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+interface IProps {
+  setCloseModal: (closeModal: boolean) => void;
+}
+
+const AddProjectModal = ({ setCloseModal }: IProps) => {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const dispatch = useDispatch();
 
-  const handleChangeTitle = (e) => {
-    setTitle(e.currentTarget.value);
+  const handleChangeTitle = (e: ChangeEvent) => {
+    setTitle((e.currentTarget as HTMLInputElement).value);
   };
 
-  const handleDescription = (e) => {
-    setDescription(e.currentTarget.value);
+  const handleDescription = (e: ChangeEvent) => {
+    setDescription((e.currentTarget as HTMLInputElement).value);
   };
 
-  const onHandleSubmit = (e) => {
+  const onHandleSubmit = (e: FormEvent) => {
     e.preventDefault();
     dispatch(projectsOperations.postProject({ title, description }));
-    setTitle("");
-    setDescription("");
-    setCloseModal();
+    setTitle('');
+    setDescription('');
+    setCloseModal(true);
   };
 
   return (
