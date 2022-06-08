@@ -1,4 +1,10 @@
-const MembersList = ({ members }) => {
+type TMember = string;
+
+interface IProps {
+  members: TMember[];
+}
+
+const MembersList = ({ members }: IProps) => {
   return (
     <ul>
       {members?.map((member) => (

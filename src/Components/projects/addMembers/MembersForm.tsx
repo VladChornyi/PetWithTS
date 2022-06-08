@@ -1,21 +1,22 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import SubmitButton from "../../common/submitButton/SubmitButton";
-import { WrapperForm } from "./MembersFormStyled";
-import MembersList from "./MembersList";
-import { useParams } from "react-router-dom";
-import projectOperations from "../../../redux/projects/projects-operations";
+import { ChangeEvent, FormEvent, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import SubmitButton from '../../common/submitButton/SubmitButton';
+import { WrapperForm } from './MembersFormStyled';
+import MembersList from './MembersList';
+import { useParams } from 'react-router-dom';
+import projectOperations from '../../../redux/projects/projects-operations';
+import { RootState } from '../../../redux/store';
 
 const MembersForm = () => {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
 
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
 
-  const handleChange = (e) => {
-    setEmail(e.currentTarget.value);
+  const handleChange = (e: ChangeEvent) => {
+    setEmail((e.currentTarget as HTMLInputElement).value);
   };
 
-  const members = useSelector((state) => {
+  const members = useSelector((state: RootState) => {
     return state.projects.items.filter((project) => {
       const projectId = project._id ?? project.id;
       return projectId === id;
@@ -24,10 +25,10 @@ const MembersForm = () => {
 
   const dispatch = useDispatch();
 
-  const onHandleSubmit = (e) => {
+  const onHandleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    dispatch(projectOperations.addMember({ id, email: { email } }));
-    setEmail("");
+    dispatch(projectOperations.addMember({ id, email }));
+    setEmail('');
   };
 
   return (
