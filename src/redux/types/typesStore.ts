@@ -9,11 +9,11 @@ export type TTitle = undefined | string;
 
 export interface IUser {
     id: null | string,
-    email: null|string
+    email:null | string
 }
 
 export interface ICredentials{
-    email: null | string,
+    email?: string,
     password: null | string
 }
 

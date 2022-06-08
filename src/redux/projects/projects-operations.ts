@@ -3,16 +3,21 @@ import axios from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getError } from "../error/error-handler";
 
+interface ICredentials{
+  title: string,
+  description: string
+}
+
 const postProject = createAsyncThunk(
   "postProject/project",
-  async (credentials, { dispatch, rejectWithValue }) => {
+  async (credentials:ICredentials, { dispatch, rejectWithValue }) => {
     try {
       const { data } = await axios.post("/project", credentials);
       return data;
     } catch (error:any) {
         getError({
           error,
-          cb: () => postProject(),
+          cb: () => postProject(credentials),
           operationType: "postProject/project",
         })
       return rejectWithValue(error.message);
