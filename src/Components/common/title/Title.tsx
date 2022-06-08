@@ -1,6 +1,10 @@
 import { TitleStyled } from './TitleStyled';
 
-const Title = ({ title }) => {
+interface IProps {
+  title: string;
+}
+
+const Title = ({ title }: IProps) => {
   return <TitleStyled>{title}</TitleStyled>;
 };
 
