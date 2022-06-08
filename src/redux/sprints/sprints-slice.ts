@@ -11,7 +11,7 @@ interface ISprint {
   id: string;
   title: string;
   duration: number;
-  startDate: string;
+  startDate: number | string;
 }
 
 interface IInitialState {
