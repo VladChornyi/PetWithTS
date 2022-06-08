@@ -6,16 +6,25 @@ import { useSelector } from 'react-redux';
 import taskSelectors from '../../redux/task/task-selectors';
 import sprintSelectors from '../../redux/sprints/sprints-selectors';
 import { useParams } from 'react-router';
-import { useEffect, useState } from 'react';
+import { ChangeEventHandler, useEffect, useState } from 'react';
 import moment from 'moment';
 
-const Chart = ({ title = 'title', open, setOpen, draw = true }) => {
-  const [labels, setLabels] = useState([]);
+interface IProps {
+  title: string;
+  open: boolean;
+  setOpen: (isOpen: boolean) => boolean;
+  draw: boolean;
+}
+
+const Chart = ({ title = 'title', open, setOpen, draw = true }: IProps) => {
+  const [labels, setLabels] = useState<string[]>([]);
+  const [planedHours, setPlanedHours] = useState<number[]>([]);
+  const [realHours, setRealHours] = useState<number[]>([]);
+
   const sprints = useSelector(sprintSelectors.getSprints);
   const tasks = useSelector(taskSelectors.getTasks);
-  const { id } = useParams();
-  const [planedHours, setPlanedHours] = useState([]);
-  const [realHovers, setRealHovers] = useState([]);
+
+  const { id } = useParams<{ id: string }>();
 
   useEffect(() => {
     if (draw) {
@@ -24,16 +33,19 @@ const Chart = ({ title = 'title', open, setOpen, draw = true }) => {
           const sprintId = sprint._id ?? sprint.id;
           return sprintId === id;
         });
-        const labelsArr = [0];
-        for (let i = 0; i < currentSprint.duration; i++) {
-          labelsArr.push(
-            moment(currentSprint.startDate).add(i, 'day').format('YYYY-MM-DD')
-          );
+        const labelsArr = ['0'];
+        const operationAmount = currentSprint?.duration ?? 0;
+        for (let i = 0; i < operationAmount; i++) {
+          const newLabelArrItem = moment(currentSprint?.startDate)
+            .add(i, 'day')
+            .format('YYYY-MM-DD');
+          labelsArr.push(newLabelArrItem);
         }
         setLabels(labelsArr);
       }
     }
   }, [id, sprints, draw]);
+
   useEffect(() => {
     if (tasks.length !== 0) {
       // Planned arr hours
@@ -58,23 +70,26 @@ const Chart = ({ title = 'title', open, setOpen, draw = true }) => {
         }
         realHourArr.push(realHourArr[realHourArr.length - 1] - realHourItem);
       }
-      setRealHovers(realHourArr);
+      setRealHours(realHourArr);
     }
   }, [tasks]);
-  const onOverlayClick = ({ target, currentTarget }) => {
-    target === currentTarget && setOpen(false);
-  };
+
+  const handleEscape = (e: KeyboardEvent) => e.code === 'Escape' && setOpen(false);
+
   useEffect(() => {
     window.addEventListener('keydown', handleEscape);
     const body = document.querySelector('body');
-    if (open) body.style.overflow = 'hidden';
+    if (open && body) body.style.overflow = 'hidden';
     return () => {
       window.removeEventListener('keydown', handleEscape);
       const body = document.querySelector('body');
-      body.style.overflow = 'auto';
+      if (body) body.style.overflow = 'auto';
     };
   });
-  const handleEscape = (e) => e.code === 'Escape' && setOpen(false);
+
+  const onOverlayClick: ChangeEventHandler<HTMLInputElement> = ({ target, currentTarget }) => {
+    target === currentTarget && setOpen(false);
+  };
 
   const data = {
     labels: labels,
@@ -98,7 +113,7 @@ const Chart = ({ title = 'title', open, setOpen, draw = true }) => {
         pointHoverBorderWidth: 2,
         pointRadius: 1,
         pointHitRadius: 10,
-        data: realHovers,
+        data: realHours,
       },
       {
         label: 'My Second dataset',
