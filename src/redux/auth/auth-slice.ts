@@ -27,7 +27,7 @@ const authSlice = createSlice({
       state.isLoggedIn = true;
     })
   
-    .addCase(authOperations.logOut.fulfilled,(state, action) => {
+    .addCase(authOperations.logOut.fulfilled,(state) => {
       state.user = { id: null, email: null };
       state.token = null;
       state.refreshToken = null;
@@ -35,7 +35,7 @@ const authSlice = createSlice({
       state.sid = null;
     })
 
-    .addCase(authOperations.refreshToken.pending, (state, action) => {
+    .addCase(authOperations.refreshToken.pending, (state) => {
       state.isFetchingCurrentUser = true;
     })
     
