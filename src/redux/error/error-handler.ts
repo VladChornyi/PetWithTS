@@ -6,7 +6,6 @@ interface IErrorData {
   status: number;
   message: string;
 }
-
 interface IReturnError {
   status: number;
   message: string;
@@ -14,13 +13,11 @@ interface IReturnError {
 interface IErrorWithStatus {
   (error: IErrorData): IReturnError;
 }
-
 interface IGetError {
   error: IErrorData;
   cb: () => any;
   operationType: string;
 }
-
 const getErrorWithStatus:IErrorWithStatus = (error) => {
   error.status = +error.message.slice(-3);
   return error;

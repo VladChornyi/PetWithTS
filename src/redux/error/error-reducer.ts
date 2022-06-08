@@ -21,9 +21,7 @@ interface IInitialState{
 type TSetError = (state:IInitialState, {payload}:any)=>IErrorData
 
 const initialState:IInitialState = {error:null}
-
-const setError:TSetError = (state:IInitialState, { payload }) => payload;
-
+const setError: TSetError = (state: IInitialState, { payload }) => payload;
 
 export const error = createReducer(initialState, (builder) => {
   builder
