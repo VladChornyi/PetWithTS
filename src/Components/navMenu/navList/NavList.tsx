@@ -2,8 +2,9 @@ import { randomBackgroud } from '../../../helpers/randomBackground';
 import { colors } from '../../../configs/background.json';
 import { NavLink } from 'react-router-dom';
 import { List } from './NavListStyled';
+import { IListProps } from '../types/types';
 
-const NavList = ({ title, list, path }) => {
+const NavList = ({ title, list, path }: IListProps) => {
   return (
     <List>
       {list?.map((item) => (
@@ -14,9 +15,7 @@ const NavList = ({ title, list, path }) => {
             to={{ pathname: `/${path}/${item._id ?? item.id}` }}
           >
             <div
-              className={`logo ${
-                title === 'спринти' ? 'white' : randomBackgroud(colors)
-              }`}
+              className={`logo ${title === 'спринти' ? 'white' : randomBackgroud(colors)}`}
             ></div>
             <h3 className="title">{item.title}</h3>
           </NavLink>
