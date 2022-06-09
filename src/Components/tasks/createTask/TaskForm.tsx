@@ -1,31 +1,35 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { addTask } from "../../../redux/task/task-operations";
+import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { addTask } from '../../../redux/task/task-operations';
 
-import SubmitButton from "../../common/submitButton/SubmitButton";
-import { WrapperForm } from "./TaskFormStyled";
-import { useParams } from "react-router";
+import SubmitButton from '../../common/submitButton/SubmitButton';
+import { WrapperForm } from './TaskFormStyled';
+import { useParams } from 'react-router';
 
-const TaskForm = ({ setCloseModal }) => {
-  const [title, setTitle] = useState("");
-  const [hoursPlanned, setHoursPlanned] = useState("");
-  const { id } = useParams();
+interface IProps {
+  setCloseModal: (closeModal: boolean) => void;
+}
 
-  const handleChangeTitle = (e) => {
-    setTitle(e.currentTarget.value);
+const TaskForm = ({ setCloseModal }: IProps) => {
+  const [title, setTitle] = useState('');
+  const [hoursPlanned, setHoursPlanned] = useState('');
+  const { id } = useParams<{ id: string }>();
+
+  const handleChangeTitle = (e: ChangeEvent) => {
+    setTitle((e.currentTarget as HTMLInputElement).value);
   };
 
-  const handleHoursPlanned = (e) => {
-    setHoursPlanned(e.currentTarget.value);
+  const handleHoursPlanned = (e: ChangeEvent) => {
+    setHoursPlanned((e.currentTarget as HTMLInputElement).value);
   };
 
   const dispatch = useDispatch();
 
-  const onHandleSubmit = (e) => {
+  const onHandleSubmit = (e: FormEvent) => {
     e.preventDefault();
     dispatch(addTask({ sprintId: id, task: { title, hoursPlanned } }));
-    setTitle("");
-    setHoursPlanned("");
+    setTitle('');
+    setHoursPlanned('');
     setCloseModal(false);
   };
 

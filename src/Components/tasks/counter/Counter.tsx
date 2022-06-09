@@ -1,22 +1,32 @@
-import { useEffect, useState } from "react";
-import { CounterWrapper } from "./CounterStyled";
-import moment from "moment";
+import { useEffect, useState } from 'react';
+import { CounterWrapper } from './CounterStyled';
+import moment from 'moment';
 
-const Counter = ({ data, settargetDate }) => {
+interface IData {
+  startDate: string;
+  duration: number;
+}
+
+interface IProps {
+  data: IData;
+  settargetDate: (date: string) => void;
+}
+
+const Counter = ({ data, settargetDate }: IProps) => {
   const [counter, setCounter] = useState(1);
-  const [startDate, setStartDate] = useState("");
-  const [duration, setDuration] = useState(null);
+  const [startDate, setStartDate] = useState('');
+  const [duration, setDuration] = useState<number | null>(null);
   const targetDate = moment(startDate)
-    .add(counter - 1, "day")
-    .format("DD MM YYYY");
+    .add(counter - 1, 'day')
+    .format('DD MM YYYY');
 
   useEffect(() => {
     settargetDate(
       moment(startDate)
-        .add(counter - 1, "day")
-        .format("YYYY-MM-DD")
+        .add(counter - 1, 'day')
+        .format('YYYY-MM-DD'),
     );
-  }, [counter, startDate]);
+  }, [counter, startDate, settargetDate]);
 
   useEffect(() => {
     if (data) {
@@ -40,22 +50,14 @@ const Counter = ({ data, settargetDate }) => {
   return (
     <CounterWrapper>
       <div className="CounterInterfaceWrapper">
-        <button
-          type="button"
-          onClick={decrement}
-          className="buttonCounter buttonCounterLeft"
-        >
+        <button type="button" onClick={decrement} className="buttonCounter buttonCounterLeft">
           &#60;
         </button>
         <p className="counterNumberContainer">
-          <span className="counterDay">{counter}</span>{" "}
+          <span className="counterDay">{counter}</span>{' '}
           <span className="counterDate">/ {duration}</span>
         </p>
-        <button
-          type="button"
-          onClick={increment}
-          className="buttonCounter buttonCounterRight"
-        >
+        <button type="button" onClick={increment} className="buttonCounter buttonCounterRight">
           &gt;
         </button>
       </div>
