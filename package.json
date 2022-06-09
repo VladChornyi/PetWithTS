@@ -52,6 +52,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-datepicker": "^4.4.2",
     "@types/react-router-dom": "^5.3.3",
     "node-sass": "^6.0.1"
   }

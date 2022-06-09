@@ -1,7 +1,20 @@
-import SprintListItem from "../SprintListItem/SprintListItem"
-import { SprintListStyled } from "./SprintListStyled"
+import SprintListItem from '../SprintListItem/SprintListItem';
+import { SprintListStyled } from './SprintListStyled';
 
-const SprintList = ({ sprints }) => {
+interface ISprint {
+  _id: string;
+  id: string;
+  title: string;
+  duration: number;
+  startDate: number | string;
+  endDate: number | string;
+}
+
+interface IProps {
+  sprints: ISprint[];
+}
+
+const SprintList = ({ sprints }: IProps) => {
   return (
     <>
       <SprintListStyled>
@@ -19,7 +32,7 @@ const SprintList = ({ sprints }) => {
         )}
       </SprintListStyled>
     </>
-  )
-}
+  );
+};
 
-export default SprintList
+export default SprintList;

@@ -1,27 +1,31 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { addSprint } from "../../../redux/sprints/sprints-operations";
-import SubmitButton from "../../common/submitButton/SubmitButton";
-import { WrapperForm } from "./CreateSprintFormStyled";
-import moment from "moment";
-import { useLocation } from "react-router";
+import { FormEvent, MouseEventHandler, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { addSprint } from '../../../redux/sprints/sprints-operations';
+import SubmitButton from '../../common/submitButton/SubmitButton';
+import { WrapperForm } from './CreateSprintFormStyled';
+import moment from 'moment';
+import { useLocation } from 'react-router';
 
-const CreateSprintForm = ({ setOpenModal }) => {
-  const [name, setName] = useState("");
-  const [duration, setDuration] = useState("");
+interface IProps {
+  setOpenModal: (isOpen: boolean) => void;
+}
+
+const CreateSprintForm = ({ setOpenModal }: IProps) => {
+  const [name, setName] = useState('');
+  const [duration, setDuration] = useState('');
   const [isActivelastDate, setIsActiveLastDate] = useState(true);
   const location = useLocation();
-  const projectId = location.pathname.split("/")[2];
+  const projectId = location.pathname.split('/')[2];
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (e: FormEvent<HTMLInputElement>) => {
+    const { name, value } = e.target as HTMLInputElement;
     switch (name) {
-      case "name":
+      case 'name':
         setName(value);
         break;
-      case "duration":
+      case 'duration':
         setDuration(value);
         break;
       default:
@@ -31,9 +35,9 @@ const CreateSprintForm = ({ setOpenModal }) => {
 
   const dispatch = useDispatch();
 
-  const onHandleSubmit = (e) => {
+  const onHandleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formatDate = moment(startDate).format("YYYY-M-D");
+    const formatDate = moment(startDate).format('YYYY-M-D');
     dispatch(
       addSprint({
         projectId,
@@ -42,16 +46,15 @@ const CreateSprintForm = ({ setOpenModal }) => {
           endDate: formatDate,
           duration,
         },
-      })
+      }),
     );
     setOpenModal(false);
-    setName("");
+    setName('');
   };
-  const changeActiveDate = (e) => {
-    e.preventDefault();
+  const changeActiveDate: MouseEventHandler<HTMLButtonElement> = (e) => {
     setIsActiveLastDate(!isActivelastDate);
   };
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState<Date | null>(new Date());
 
   return (
     <WrapperForm>
@@ -67,14 +70,8 @@ const CreateSprintForm = ({ setOpenModal }) => {
             onChange={handleChange}
           />
         </label>
-        <button
-          onClick={changeActiveDate}
-          type="button"
-          className="round__wrapper"
-        >
-          <span className="round">
-            {!isActivelastDate && <span className="orange"></span>}
-          </span>
+        <button onClick={changeActiveDate} type="button" className="round__wrapper">
+          <span className="round">{!isActivelastDate && <span className="orange"></span>}</span>
           Попередні дні
         </button>
         <div className="date__wrapper">
@@ -86,7 +83,7 @@ const CreateSprintForm = ({ setOpenModal }) => {
               name="date"
               selected={startDate}
               onChange={(date) => setStartDate(date)}
-              minDate={isActivelastDate && new Date()}
+              minDate={isActivelastDate ? new Date() : null}
             />
           </label>
           <label>
@@ -102,7 +99,7 @@ const CreateSprintForm = ({ setOpenModal }) => {
           </label>
         </div>
         <div className="submitWrapper">
-          <SubmitButton className="submit" nameBtn="Готово" />
+          <SubmitButton nameBtn="Готово" />
         </div>
       </form>
     </WrapperForm>
