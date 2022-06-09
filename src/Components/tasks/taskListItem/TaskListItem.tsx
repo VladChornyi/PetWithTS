@@ -1,52 +1,72 @@
-import Button from "../../common/button/Button";
-import { TaskListItemWrapper } from "./TaskListItemStyled";
+import Button from '../../common/button/Button';
+import { TaskListItemWrapper } from './TaskListItemStyled';
 import {
   deleteSprintsTask,
+  IItem,
+  IItem_,
   patchTaskHours,
-} from "../../../redux/task/task-operations";
-import { useDispatch } from "react-redux";
-import { useState, useEffect } from "react";
-import { useFormik } from "formik";
-import * as yup from "yup";
+} from '../../../redux/task/task-operations';
+import { useDispatch } from 'react-redux';
+import { useState, useEffect } from 'react';
+import { useFormik } from 'formik';
+import * as yup from 'yup';
 
 // import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
+import { AppDispatch } from '../../../redux/store';
 
 const schema = yup.object().shape({
   hoursWasted: yup
     .number()
-    .min(0, "Должно быть от нуля до 8")
-    .max(8, "Должно быть от нуля до 8")
-    .required("Должно быть обязательно")
+    .min(0, 'Должно быть от нуля до 8')
+    .max(8, 'Должно быть от нуля до 8')
+    .required('Должно быть обязательно')
     .positive()
     .integer(),
 });
 
-const TaskListItem = ({ task, targetDate }) => {
+interface IFormikObjPart {
+  hoursWasted: number | string;
+}
+
+interface IFormikObj {
+  initialValues: IFormikObjPart;
+  validationSchema: any;
+  onSubmit: any;
+}
+
+interface IProps {
+  task: IItem | IItem_;
+  targetDate: string;
+}
+
+const TaskListItem = ({ task, targetDate }: IProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isOpenDesktop, setIsOpenDesktop] = useState(false);
-  const [hoursWasted, sethoursWasted] = useState(0);
-  const [sprintId, setSprintId] = useState(null);
+  const [isOpenDesktop, setIsOpenDesktop] = useState<boolean>(false);
+  const [hoursWasted, sethoursWasted] = useState<number>(0);
+  const [sprintId, setSprintId] = useState<string>('');
   const [currentDayHour, setcurrentDayHour] = useState(0);
-  const formik = useFormik({
+  const FormikObjState: IFormikObj = {
     initialValues: { hoursWasted: 0 },
     validationSchema: schema,
-  });
-  const dispatch = useDispatch();
+    onSubmit: null,
+  };
+  const formik = useFormik(FormikObjState);
+  const dispatch: AppDispatch = useDispatch();
 
-  const deleteTask = (e) => {
+  const deleteTask = () => {
     return dispatch(deleteSprintsTask(task._id ?? task.id));
   };
 
-  const onHandleClikc = async (e) => {
+  const onHandleClikc = () => {
     setSprintId(task._id ?? task.id);
-    await setIsOpen(true);
+    setIsOpen(true);
     focusInput();
   };
 
   const focusInput = () => {
-    return document.getElementById("inputNumber").focus();
+    return document.getElementById('inputNumber')?.focus();
   };
 
   useEffect(() => {
@@ -56,7 +76,7 @@ const TaskListItem = ({ task, targetDate }) => {
       formik.values.hoursWasted = 0;
     }
     // formik.values.hoursWasted = currentDayHour;
-  }, [hoursWasted, currentDayHour]);
+  }, [hoursWasted, currentDayHour, formik.values]);
 
   useEffect(() => {
     if (task) {
@@ -69,41 +89,39 @@ const TaskListItem = ({ task, targetDate }) => {
     }
   }, [task, targetDate]);
 
-  const onHandleSubmit = (e) => {
-    e.preventDefault();
-  };
-
   const onBlur = () => {
     if (
       Number(formik.values.hoursWasted) >= 0 &&
       Number(formik.values.hoursWasted) <= 8 &&
-      formik.values.hoursWasted !== ""
+      formik.values.hoursWasted !== 0
     ) {
       const taskObj = {
         date: targetDate,
         hours: Number(formik.values.hoursWasted),
       };
-      dispatch(patchTaskHours({ sprintId, taskObj }));
+      if (sprintId) {
+        dispatch(patchTaskHours({ sprintId, taskObj }));
+      }
     }
 
     setIsOpen(false);
   };
 
-  const onHandleClickDesktop = async (e) => {
+  const onHandleClickDesktop = async () => {
     setSprintId(task._id ?? task.id);
-    await setIsOpenDesktop(true);
+    setIsOpenDesktop(true);
     focusInputDesktop();
   };
 
   const focusInputDesktop = () => {
-    return document.getElementById("inputNumberDesktop").focus();
+    return document.getElementById('inputNumberDesktop')?.focus();
   };
 
   const onBlurDesktop = () => {
     if (
       Number(formik.values.hoursWasted) >= 0 &&
       Number(formik.values.hoursWasted) <= 8 &&
-      formik.values.hoursWasted !== ""
+      formik.values.hoursWasted !== ''
     ) {
       const taskObj = {
         date: targetDate,
@@ -116,23 +134,19 @@ const TaskListItem = ({ task, targetDate }) => {
 
   useEffect(() => {
     if (formik.errors.hoursWasted) {
-      if (
-        formik.errors.hoursWasted === "hoursWasted must be a positive number"
-      ) {
+      if (formik.errors.hoursWasted === 'hoursWasted must be a positive number') {
         if (formik.values.hoursWasted !== 0) {
-          toast.warning(
-            "Мінімальний час на виконання однієї задачі - 0 год на день."
-          );
+          toast.warning('Мінімальний час на виконання однієї задачі - 0 год на день.');
         }
       }
 
-      if (formik.errors.hoursWasted === "Должно быть от нуля до 8") {
+      if (formik.errors.hoursWasted === 'Должно быть от нуля до 8') {
         toast.warning(
-          "Максимальний час на виконання однієї задачі - 8 год на день. Не перепрацьовуйте!"
+          'Максимальний час на виконання однієї задачі - 8 год на день. Не перепрацьовуйте!',
         );
       }
     }
-  }, [formik.errors.hoursWasted]);
+  }, [formik.errors.hoursWasted, formik.values.hoursWasted]);
 
   return (
     <TaskListItemWrapper>
@@ -172,11 +186,7 @@ const TaskListItem = ({ task, targetDate }) => {
           <span className="describtionHourNumber">{task.hoursWasted}</span>
         </p>
         <div className="BtnDelete">
-          <Button
-            icon="delete"
-            classBtn="editDelete"
-            onHandleClick={deleteTask}
-          />
+          <Button icon="delete" classBtn="editDelete" onHandleClick={deleteTask} />
         </div>
       </div>
       <div className="TaskDescriptionDesktop">
@@ -201,11 +211,7 @@ const TaskListItem = ({ task, targetDate }) => {
         <span className="describtionHourNumber">{task.hoursWasted}</span>
 
         <div className="BtnDeleteDesktop">
-          <Button
-            icon="delete"
-            classBtn="editDelete"
-            onHandleClick={deleteTask}
-          />
+          <Button icon="delete" classBtn="editDelete" onHandleClick={deleteTask} />
         </div>
       </div>
     </TaskListItemWrapper>

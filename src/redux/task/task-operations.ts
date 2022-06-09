@@ -13,10 +13,18 @@ interface IHoursWastedPerDay {
   singleHoursWasted: number;
 }
 
-interface IItem {
+export interface IItem {
   title: string;
-  id?: string;
-  _id?: string;
+  id: string;
+  _id: never;
+  hoursPlanned: number;
+  hoursWasted: number;
+  hoursWastedPerDay: IHoursWastedPerDay[];
+}
+export interface IItem_ {
+  title: string;
+  id: never;
+  _id: string;
   hoursPlanned: number;
   hoursWasted: number;
   hoursWastedPerDay: IHoursWastedPerDay[];
@@ -47,14 +55,14 @@ export const addTask = createAsyncThunk(
 export const getSprintsTasks = createAsyncThunk(
   "task/getTAsks",
 
-  async (sprintId, { rejectWithValue }) => {
+  async (sprintId:string, { rejectWithValue }) => {
     try {
       const { data } = await axios.get(`/task/${sprintId}`);
       return data;
     } catch (error:any) {
         getError({
           error,
-          cb: () => getSprintsTasks(),
+          cb: () => getSprintsTasks(sprintId),
           operationType: "task/getTAsks",
         })
       return rejectWithValue(error.message);
@@ -64,7 +72,7 @@ export const getSprintsTasks = createAsyncThunk(
 
 export const deleteSprintsTask = createAsyncThunk(
   "task/deleteTask",
-  async (taskId, { rejectWithValue }) => {
+  async (taskId:string, { rejectWithValue }) => {
     try {
       await axios.delete(`/task/${taskId}`);
       return taskId;
@@ -100,7 +108,7 @@ export const patchTaskHours = createAsyncThunk(
 
 export const patchTitleSprint = createAsyncThunk(
   "task/patchTitleSprint",
-  async (Data:IItem, { rejectWithValue }) => {
+  async (Data:IItem | IItem_, { rejectWithValue }) => {
     try {
       const { data } = await axios.patch(
         `/sprint/title/${Data.id}`,

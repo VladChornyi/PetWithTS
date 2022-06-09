@@ -1,6 +1,6 @@
 export interface IItem {
-  id?: string;
-  _id?: string;
+  id: string;
+  _id: string;
   title: string;
 }
 
