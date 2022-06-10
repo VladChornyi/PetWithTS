@@ -2,16 +2,10 @@ import { ProjectsListStyled } from './ProjectsListStyled';
 import ProjectItem from '../projectItem/ProjectItem';
 import { randomBackgroud } from '../../../helpers/randomBackground';
 import { colors } from '../../../configs/background.json';
-
-interface IProject {
-  _id: string;
-  id: string;
-  title: string;
-  description: string;
-}
+import { IProjectState } from '../../../redux/types/typesStore';
 
 interface IProps {
-  projects: IProject[];
+  projects: IProjectState[];
 }
 
 const ProjectsList = ({ projects }: IProps) => {

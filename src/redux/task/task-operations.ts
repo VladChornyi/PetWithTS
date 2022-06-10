@@ -105,10 +105,13 @@ export const patchTaskHours = createAsyncThunk(
     }
   }
 );
-
+interface IPatchTitleSprint {
+  id: string;
+  title: string;
+}
 export const patchTitleSprint = createAsyncThunk(
   "task/patchTitleSprint",
-  async (Data:IItem | IItem_, { rejectWithValue }) => {
+  async (Data:IPatchTitleSprint, { rejectWithValue }) => {
     try {
       const { data } = await axios.patch(
         `/sprint/title/${Data.id}`,

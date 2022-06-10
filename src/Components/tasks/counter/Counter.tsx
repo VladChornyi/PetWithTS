@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CounterWrapper } from './CounterStyled';
 import moment from 'moment';
+import { ISprint } from '../../../redux/sprints/sprints-slice';
 
 interface IData {
   startDate: string;
@@ -8,13 +9,13 @@ interface IData {
 }
 
 interface IProps {
-  data: IData;
+  data: ISprint | null;
   settargetDate: (date: string) => void;
 }
 
 const Counter = ({ data, settargetDate }: IProps) => {
-  const [counter, setCounter] = useState(1);
-  const [startDate, setStartDate] = useState('');
+  const [counter, setCounter] = useState<number>(1);
+  const [startDate, setStartDate] = useState<string | number>('');
   const [duration, setDuration] = useState<number | null>(null);
   const targetDate = moment(startDate)
     .add(counter - 1, 'day')

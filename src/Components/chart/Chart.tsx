@@ -10,9 +10,9 @@ import { ChangeEventHandler, useEffect, useState } from 'react';
 import moment from 'moment';
 
 interface IProps {
-  title: string;
+  title?: string;
   open: boolean;
-  setOpen: (isOpen: boolean) => boolean;
+  setOpen: (isOpen: boolean) => void;
   draw: boolean;
 }
 

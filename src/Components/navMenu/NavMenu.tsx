@@ -5,9 +5,9 @@ import { Link } from 'react-router-dom';
 import CreateProject from '../projects/createProject/CreateProject';
 import CreateSprint from '../sprints/createSprint/CreateSprint';
 import { useState } from 'react';
-import { IListProps } from './types/types';
+import { IListProjectProps, IListSprintProps } from './types/types';
 
-const NavMenu = ({ title, list, path, linkTo = '/' }: IListProps) => {
+const NavMenu = ({ title, list, path, linkTo = '/' }: IListProjectProps | IListSprintProps) => {
   const [closeModalProject, setCloseModalProject] = useState<boolean>(false);
   const [openModalSprints, setOpenModalSprints] = useState<boolean>(false);
 
@@ -19,7 +19,7 @@ const NavMenu = ({ title, list, path, linkTo = '/' }: IListProps) => {
         </div>
         <p className="button-title">Показати {title}</p>
       </Link>
-      <NavList title={title} list={list} path={path} />
+      <NavList title={title} list={list} path={path} linkTo={linkTo} />
       <div className="button__wrapper">
         <Button
           onHandleClick={() =>

@@ -23,7 +23,7 @@ const logIn = createAsyncThunk(
       const { data } = await axios.post("/auth/login", credentials);
       token.set(data.accessToken);
       return data;
-    } catch (error) {
+    } catch (error:any) {
       return rejectWithValue(setErrorStatus(error));
     } finally {
       dispatch(resetErrorAction());
@@ -37,7 +37,7 @@ const register = createAsyncThunk(
     try {
       const { data } = await axios.post("/auth/register", credentials);
       return data;
-    } catch (error) {
+    } catch (error:any) {
       return rejectWithValue(setErrorStatus(error));
     } finally {
       dispatch(resetErrorAction());
@@ -52,7 +52,7 @@ const logOut = createAsyncThunk(
       await axios.post("/auth/logout");
 
       dispatch(projectLogOut());
-    } catch (error) {
+    } catch (error:any) {
       return rejectWithValue(setErrorStatus(error));
     } finally {
       dispatch(resetErrorAction());

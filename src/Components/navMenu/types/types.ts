@@ -1,12 +1,16 @@
-export interface IItem {
-  id: string;
-  _id: string;
-  title: string;
-}
+import { ISprint } from "../../../redux/sprints/sprints-slice";
+import { IProjectState } from "../../../redux/types/typesStore";
 
-export interface IListProps {
+
+export interface IListProjectProps {
   title?: string;
-  list: IItem[];
-    path: string;
-    linkTo?:string
+  list: IProjectState[];
+  path: string;
+  linkTo?:string
+}
+export interface IListSprintProps{
+  title?: string;
+  list: ISprint[];
+  path: string;
+  linkTo?:string
 }

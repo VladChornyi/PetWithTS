@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 import { ReactNode } from 'react';
 
 interface IProps {
-  title: string;
-  redirectMessage: string;
-  redirectLinkMessage: string;
-  redirectTo: string;
+  title?: string;
+  redirectMessage?: string;
+  redirectLinkMessage?: string;
+  redirectTo?: string;
   children: ReactNode;
 }
 

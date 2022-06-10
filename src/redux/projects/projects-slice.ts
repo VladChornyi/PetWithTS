@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import projectOperations, { updateProjectTitle } from "./projects-operations";
 
 
-interface IProjectInitialState{
+export interface IProjectInitialState{
   items: IProjectState[],
   isLoading: boolean
 }

@@ -1,3 +1,5 @@
+import { ISprint } from "../sprints/sprints-slice";
+
 export type TToken = null | string;
 export type TRefreshToken = null | string;
 export type TSid= null|string
@@ -40,11 +42,11 @@ export interface IProjectState{
     title: string;
     description: string;
     members: string[];
-    sprints: string[];
+    sprints: ISprint[];
     __v?: number;
 }
 
 export interface IUpdateProjectTitleData {
   id: string;
-  title: string;
+  title: {title:string};
 }

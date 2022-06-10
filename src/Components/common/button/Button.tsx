@@ -1,7 +1,8 @@
+import { FormEvent } from 'react';
 import { ButtonWrapper } from './ButtonStyled';
 
 interface IProps {
-  onHandleClick: () => void;
+  onHandleClick: (e: FormEvent) => void;
   icon?: string;
   classBtn?: string;
   background?: string;

@@ -7,15 +7,7 @@ import { deleteSprint } from '../../../redux/sprints/sprints-operations';
 import { useParams } from 'react-router-dom';
 import moment from 'moment';
 import 'moment/locale/uk';
-
-interface ISprint {
-  _id: string;
-  id: string;
-  title: string;
-  duration: number;
-  startDate: number | string;
-  endDate: number | string;
-}
+import { ISprint } from '../../../redux/sprints/sprints-slice';
 
 interface IProps {
   sprint: ISprint;

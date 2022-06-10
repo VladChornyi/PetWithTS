@@ -1,14 +1,6 @@
+import { ISprint } from '../../../redux/sprints/sprints-slice';
 import SprintListItem from '../SprintListItem/SprintListItem';
 import { SprintListStyled } from './SprintListStyled';
-
-interface ISprint {
-  _id: string;
-  id: string;
-  title: string;
-  duration: number;
-  startDate: number | string;
-  endDate: number | string;
-}
 
 interface IProps {
   sprints: ISprint[];

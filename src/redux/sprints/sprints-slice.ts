@@ -6,13 +6,16 @@ import {
   getProjectsSprints,
 } from "./sprints-operations";
 
-interface ISprint {
+export interface ISprint {
   _id: string;
   id: string;
   title: string;
   duration: number;
   startDate: number | string;
+  endDate: number | string;
+  
 }
+
 
 interface IInitialState {
   items: ISprint[];

@@ -5,7 +5,7 @@ import buttonIcons from '../../configs/buttonIcons.json';
 import NavContainer from '../../Components/common/containers/navContainer/NavContainer';
 import NavMenu from '../../Components/navMenu/NavMenu';
 import CreateMembers from '../../Components/projects/addMembers/CreateMember';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
 import CreateSprint from '../../Components/sprints/createSprint/CreateSprint';
 import { useDispatch, useSelector } from 'react-redux';
 import { token } from '../../redux/auth/auth-operations';
@@ -29,18 +29,16 @@ const SprintPage = () => {
   const [title, setTitle] = useState('title');
   const [description, setDescription] = useState('description');
   const [showInput, setShowInput] = useState(false);
-  const { id } = useParams();
-  const currentProject = projects.find(
-    (project) => project._id ?? project.id === id
-  );
+  const { id } = useParams<{ id: string }>();
+  const currentProject = projects.find((project) => project._id ?? project.id === id);
   const [redirect, setRedirect] = useState(false);
 
   const editNameHandle = () => {
     setShowInput(true);
   };
 
-  const onHandleChange = (e) => {
-    const { name, value } = e.target;
+  const onHandleChange = (e: FormEvent<HTMLInputElement>) => {
+    const { name, value } = e.target as HTMLInputElement;
     switch (name) {
       case 'newTitle':
         setTitle(value);
@@ -60,19 +58,19 @@ const SprintPage = () => {
         toast.warning('Ви не є учасником цього проекту!');
       }
     }
-  }, [projects]);
+  }, [projects, id]);
 
-  const changeTitleSubmit = (e) => {
+  const changeTitleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    if (currentProject.title !== title || title !== '') {
+    if (currentProject?.title !== title || title !== '') {
       dispatch(
         projectOperations.updateProjectTitle({
           id,
           title: {
             title: title,
           },
-        })
+        }),
       );
     }
     setShowInput(false);
@@ -80,9 +78,7 @@ const SprintPage = () => {
 
   useEffect(() => {
     token.set(isAuth);
-    isAuth &&
-      dispatch(getProjectsSprints(id)) &&
-      dispatch(projectOperations.getProjects());
+    isAuth && dispatch(getProjectsSprints(id)) && dispatch(projectOperations.getProjects());
   }, [dispatch, id, isAuth]);
 
   useEffect(() => {
@@ -111,11 +107,8 @@ const SprintPage = () => {
                         <h2>{title}</h2>
 
                         <Button
-                          title="Edit the name"
                           icon={buttonIcons.edit}
                           classBtn="editDelete"
-                          type="button"
-                          className="buttonChange"
                           onHandleClick={editNameHandle}
                         />
                       </>
@@ -123,11 +116,7 @@ const SprintPage = () => {
                     {showInput && (
                       <form
                         onSubmit={changeTitleSubmit}
-                        className={
-                          showInput
-                            ? 'changeTitleFormActive'
-                            : 'changeTitleForm'
-                        }
+                        className={showInput ? 'changeTitleFormActive' : 'changeTitleForm'}
                       >
                         <input
                           className="inputChangeTitle"
@@ -139,9 +128,6 @@ const SprintPage = () => {
                         <Button
                           icon={buttonIcons.edit}
                           classBtn="editDelete"
-                          title="Edit the title"
-                          type="submit"
-                          className="buttonChange"
                           onHandleClick={changeTitleSubmit}
                         />
                       </form>
@@ -151,13 +137,8 @@ const SprintPage = () => {
                   <p>{description}</p>
 
                   <div className="addWrap">
-                    <button
-                      className="btnWrap"
-                      onClick={() => setOpenModalMembers(true)}
-                    >
-                      <span className="material-icons-outlined">
-                        {buttonIcons.group_add}
-                      </span>
+                    <button className="btnWrap" onClick={() => setOpenModalMembers(true)}>
+                      <span className="material-icons-outlined">{buttonIcons.group_add}</span>
                       <span className="textAddPeople">Додати людей</span>
                     </button>
 
@@ -172,7 +153,6 @@ const SprintPage = () => {
                     <Button
                       icon={buttonIcons.add}
                       classBtn="add"
-                      className="createNewSprintFixed"
                       onHandleClick={() => setOpenModalSprints(true)}
                     />
                     <CreateSprint

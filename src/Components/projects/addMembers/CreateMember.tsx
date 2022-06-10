@@ -3,7 +3,7 @@ import MembersForm from './MembersForm';
 
 interface IProps {
   closeModal: boolean;
-  setOpenModal: () => void;
+  setOpenModal: (isOpen: boolean) => void;
 }
 
 const CreateMembers = ({ closeModal, setOpenModal }: IProps) => {

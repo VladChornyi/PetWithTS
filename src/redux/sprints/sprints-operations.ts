@@ -30,14 +30,14 @@ export const addSprint = createAsyncThunk(
 
 export const getProjectsSprints = createAsyncThunk(
   "sprint/getSprints",
-  async (projectId, { dispatch, rejectWithValue }) => {
+  async (projectId:string, { dispatch, rejectWithValue }) => {
     try {
       const { data } = await axios.get(`/sprint/${projectId}`);
       return data;
     } catch (error:any) {
         getError({
           error,
-          cb: () => getProjectsSprints(),
+          cb: () => getProjectsSprints(projectId),
           operationType: "sprint/getSprints",
         })
       return rejectWithValue(error.message);

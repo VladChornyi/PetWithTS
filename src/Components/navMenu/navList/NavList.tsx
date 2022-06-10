@@ -2,12 +2,11 @@ import { randomBackgroud } from '../../../helpers/randomBackground';
 import { colors } from '../../../configs/background.json';
 import { NavLink } from 'react-router-dom';
 import { List } from './NavListStyled';
-import { IListProps } from '../types/types';
 
-const NavList = ({ title, list, path }: IListProps) => {
+const NavList = ({ title, list, path, linkTo }: any) => {
   return (
     <List>
-      {list?.map((item) => (
+      {list?.map((item: any) => (
         <li key={item.id ?? item._id} className="item">
           <NavLink
             className="nav_link"
