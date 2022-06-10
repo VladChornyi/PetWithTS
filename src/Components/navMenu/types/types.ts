@@ -4,13 +4,13 @@ import { IProjectState } from "../../../redux/types/typesStore";
 
 export interface IListProjectProps {
   title?: string;
-  list: IProjectState[];
-  path: string;
+  list?: IProjectState[];
+  path?: string;
   linkTo?:string
 }
 export interface IListSprintProps{
   title?: string;
-  list: ISprint[];
-  path: string;
+  list?: ISprint[];
+  path?: string;
   linkTo?:string
 }
